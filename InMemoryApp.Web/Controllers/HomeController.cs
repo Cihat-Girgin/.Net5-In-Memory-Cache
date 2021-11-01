@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,6 +21,12 @@ namespace InMemoryApp.Web.Controllers
 
         public IActionResult Index()
         {
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/cities.txt");
+            foreach (var person in System.IO.File.ReadLines(path))
+            {
+                
+            }
             return View();
         }
 
