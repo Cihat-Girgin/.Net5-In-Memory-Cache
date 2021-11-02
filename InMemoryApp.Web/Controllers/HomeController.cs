@@ -21,10 +21,11 @@ namespace InMemoryApp.Web.Controllers
 
         public IActionResult Index()
         {
+            
             return View();
         }
 
-        public List<Person> GetPersonsFromFile()
+        private List<Person> GetPersonsFromFile()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/cities.txt");
             List<Person> persons = new();
