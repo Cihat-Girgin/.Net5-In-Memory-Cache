@@ -27,6 +27,24 @@ namespace InMemoryApp.Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult GetPersonList()
+        {
+            if (_memoryCache.Get<List<Person>>("PersonList") == null)
+            {
+                var personList = GetPersonsFromFile();
+                MemoryCacheEntryOptions options = new()
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(1), SlidingExpiration = TimeSpan.FromSeconds(30), Priority = CacheItemPriority.High
+                };
+                _memoryCache.Set<List<Person>>("PersonList", personList);
+                return Json(personList);
+            }
+
+            return Json(_memoryCache.Get<List<Person>>("PersonList"));
+           
+        }
+
         private List<Person> GetPersonsFromFile()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/cities.txt");
