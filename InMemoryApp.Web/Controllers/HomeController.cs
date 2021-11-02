@@ -65,8 +65,6 @@ namespace InMemoryApp.Web.Controllers
             {
                 foreach (var person in System.IO.File.ReadLines(path))
                 {
-                    Console.WriteLine(person);
-                    //ID,Job Title,Email Address,FirstName LastName
                     var personInfoArray = person.Split(",");
 
                     persons.Add(new Person
