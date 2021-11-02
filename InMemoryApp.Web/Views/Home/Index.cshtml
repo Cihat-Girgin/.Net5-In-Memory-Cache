@@ -1,25 +1,23 @@
-﻿@{
+﻿@model List<Person>
+@{
     ViewData["Title"] = "Home Page";
+    var timeInfo = TempData["TimeInfo"] as TimeInfo;
 }
 
 
 <div class="container mt-5">
     <div class="row">
         <div class="col-12">
-            <button type="button" class="person-list-button btn btn-success">Get Person List</button>
-            <button type="button" class="clean-cache-button btn btn-primary">Clean Cache</button>
-            <button type="button" class="clean-list-button btn btn-danger">Clean List</button>
+            <button type="button" class="clean-cache-button btn btn-success">Clean Cache</button>
         </div>
+          <div class="col-12">
+              Source : @timeInfo.Source Execution time : @timeInfo.ExecutionTime   
+          </div>
     </div>
     <div class="row mt-5">
         <div class="col-12">
             <h4>Person List</h4>
         </div>
-        @* <div class="col-12"> *@
-        @*     <div class="spinner-border text-info table-spinner" style="margin-left: 50%;width: 50px;height: 50px;display: none" role="status"> *@
-        @*         <span class="sr-only"></span> *@
-        @*     </div> *@
-        @* </div> *@
         <div class="col-12">
             <table class="table  person-list-table">
                 <thead>
@@ -31,10 +29,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                 
-                </tr>
-               
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.FullName</td>
+                        <td>@item.Job</td>
+                        <td>@item.Email</td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
@@ -44,21 +47,6 @@
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js" integrity="sha512-MqEDqB7me8klOYxXXQlB4LaNf9V9S0+sG1i8LtPOYmHqICuEZ9ZLbyV3qIfADg2UJcLyCm4fawNiFvnYbcBJ1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        document.querySelector(".person-list-button").addEventListener("click",()=>{
-            $.post("/Home/GetPersonList",{},(list)=>{
-                 document.querySelector(".person-list-table > tbody").innerHTML="";
-              //  document.querySelector(".table-spinner").style.display="block";                
-                const listHtml = list.map(person =>{
-                    return `<tr>
-                            <td> ${person.id}</td>
-                            <td> ${person.fullName}</td>
-                            <td> ${person.email}</td>
-                            <td> ${person.job}</td>
-                        </tr>`
-                })
-                document.querySelector(".person-list-table > tbody").innerHTML = listHtml;
-            });
-        }); 
         
         document.querySelector(".clean-cache-button").addEventListener("click",()=>{
             $.post("/Home/CleanCache",{},(res)=>{
@@ -70,8 +58,6 @@
                 }
             });
         }); 
-        document.querySelector(".clean-list-button").addEventListener("click",()=>{
-          document.querySelector(".person-list-table > tbody").innerHTML="";
-        });
+        
     </script>
 }

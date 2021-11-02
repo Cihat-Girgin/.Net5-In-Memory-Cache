@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace InMemoryApp.Web.Controllers
@@ -24,12 +22,17 @@ namespace InMemoryApp.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            
+            return View(GetPersonList());
         }
 
         [HttpPost]
-        public JsonResult GetPersonList()
+        private List<Person> GetPersonList()
         {
+            var watch = Stopwatch.StartNew();
+
+            
+            
             if (_memoryCache.Get<List<Person>>("PersonList") == null)
             {
                 var personList = GetPersonsFromFile();
@@ -38,13 +41,15 @@ namespace InMemoryApp.Web.Controllers
                     AbsoluteExpiration = DateTime.Now.AddMinutes(1), SlidingExpiration = TimeSpan.FromSeconds(30), Priority = CacheItemPriority.High
                 };
                 _memoryCache.Set<List<Person>>("PersonList", personList);
-                return Json(personList);
+                watch.Stop();
+                TempData["TimeInfo"] = new TimeInfo {Source = "File", ExecutionTime = $"{watch.ElapsedMilliseconds.ToString()} ms"};
+                return personList;
             }
-
-            return Json(_memoryCache.Get<List<Person>>("PersonList"));
+            watch.Stop();
+            TempData["TimeInfo"] = new TimeInfo {Source = "Cache", ExecutionTime = $"{watch.ElapsedMilliseconds.ToString()} ms"};
+            return _memoryCache.Get<List<Person>>("PersonList");
            
         }
-        [HttpPost]
         public JsonResult CleanCache()
         {
             try
