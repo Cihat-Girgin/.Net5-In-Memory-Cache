@@ -10,14 +10,21 @@
     <div class="row">
         <div class="col-12">
             <button type="button" class="person-list-button">Get Person List</button>
+            <button type="button" class="clean-cache-button">Clean Cache</button>
         </div>
     </div>
 </div>
 @section Scripts{
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js" integrity="sha512-MqEDqB7me8klOYxXXQlB4LaNf9V9S0+sG1i8LtPOYmHqICuEZ9ZLbyV3qIfADg2UJcLyCm4fawNiFvnYbcBJ1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         document.querySelector(".person-list-button").addEventListener("click",()=>{
             $.post("/Home/GetPersonList",{},(list)=>{
+                console.log(list);
+            });
+        }); 
+        
+        document.querySelector(".clean-cache-button").addEventListener("click",()=>{
+            $.post("/Home/CleanCache",{},(list)=>{
                 console.log(list);
             });
         });
