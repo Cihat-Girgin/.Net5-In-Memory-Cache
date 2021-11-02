@@ -44,27 +44,46 @@ namespace InMemoryApp.Web.Controllers
             return Json(_memoryCache.Get<List<Person>>("PersonList"));
            
         }
-
+        [HttpPost]
+        public JsonResult CleanCache()
+        {
+            try
+            {
+                _memoryCache.Remove("PersonList");
+                return Json(new {status=true,message="Clean cache successfully"});
+            }
+            catch (Exception)
+            {
+                return Json(new {status=false,message="Something went wrong"});
+            }
+        }
         private List<Person> GetPersonsFromFile()
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/cities.txt");
             List<Person> persons = new();
-            foreach (var person in System.IO.File.ReadLines(path))
+            try
             {
-                //ID,Job Title,Email Address,FirstName LastName
-                var personInfoArray = person.Split(",");
-
-                persons.Add(new Person
+                foreach (var person in System.IO.File.ReadLines(path))
                 {
-                    Id = Convert.ToInt32(personInfoArray[0]),
-                    Job = personInfoArray[1],
-                    Title = personInfoArray[2],
-                    Email = personInfoArray[3],
-                    Address = personInfoArray[4],
-                    FirstName = personInfoArray[5],
-                    LastName = personInfoArray[6],
-                });
+                    Console.WriteLine(person);
+                    //ID,Job Title,Email Address,FirstName LastName
+                    var personInfoArray = person.Split(",");
+
+                    persons.Add(new Person
+                    {
+                        Id = Convert.ToInt32(personInfoArray[0]),
+                        Job = personInfoArray[1],
+                        Email = personInfoArray[2],
+                        FullName = personInfoArray[3],
+                    });
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
 
             return persons;
         }
